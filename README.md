@@ -1,0 +1,2 @@
+# Lumin
+Lumin WordPress theme

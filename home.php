@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 
-<div class="container archive-page-wrapper">
+<div class="container index-page-wrapper" style="display: flex; gap: 40px; flex-wrap: nowrap; align-items: flex-start;">
 
-    <!-- Yazılar -->
-    <main class="archive-main cards-wrapper">
+    <!-- Ana İçerik -->
+    <main class="index-main" style="flex: 3; min-width: 0;">
         <?php if ( have_posts() ) : ?>
             <div class="cards-row">
                 <?php while ( have_posts() ) : the_post(); ?>
-                    <article class="post-card">
+                    <article <?php post_class('post-card'); ?>>
                         <?php if ( has_post_thumbnail() ) : ?>
                             <div class="post-card-image">
                                 <a href="<?php the_permalink(); ?>">
@@ -20,7 +20,7 @@
                                 <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
                             </h2>
                             <div class="post-card-meta">
-                                <?php the_time('F j, Y'); ?> | <?php the_category(', '); ?>
+                                <?php echo get_the_date(); ?> | <?php the_category(', '); ?>
                             </div>
                             <div class="post-card-excerpt">
                                 <?php the_excerpt(); ?>
@@ -32,21 +32,27 @@
 
             <!-- Pagination -->
             <div class="pagination">
-                <?php echo paginate_links(array(
-                    'prev_text' => __('« Önceki', 'mytheme'),
-                    'next_text' => __('Sonraki »', 'mytheme'),
-                )); ?>
+                <?php 
+                echo paginate_links([
+                    'prev_text' => __('« Önceki', 'm4v3r4-dev'),
+                    'next_text' => __('Sonraki »', 'm4v3r4-dev'),
+                    'type'      => 'list',
+                ]); 
+                ?>
             </div>
+
         <?php else : ?>
             <p>Henüz yazı yok.</p>
         <?php endif; ?>
     </main>
 
     <!-- Sidebar -->
-    <aside class="archive-sidebar">
-        <?php if ( is_active_sidebar( 'primary-widget-area' ) ) : ?>
-            <?php dynamic_sidebar( 'primary-widget-area' ); ?>
-        <?php endif; ?>
+    <aside class="index-sidebar" style="flex: 1; min-width: 250px;">
+        <?php 
+        if ( is_active_sidebar( 'primary-widget-area' ) ) :
+            dynamic_sidebar( 'primary-widget-area' ); 
+        endif; 
+        ?>
     </aside>
 
 </div>

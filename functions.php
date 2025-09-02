@@ -1,5 +1,7 @@
 <?php
+// ===========================
 // Tema destekleri
+// ===========================
 function m4v3r4_theme_setup() {
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
@@ -17,7 +19,9 @@ function m4v3r4_theme_setup() {
 }
 add_action('after_setup_theme', 'm4v3r4_theme_setup');
 
+// ===========================
 // Widget alanları
+// ===========================
 function mytheme_widgets_init() {
     register_sidebar([
         'name'          => __('Primary Sidebar', 'mytheme'),
@@ -31,11 +35,12 @@ function mytheme_widgets_init() {
 }
 add_action('widgets_init', 'mytheme_widgets_init');
 
+// ===========================
 // CSS ve JS ekleme
+// ===========================
 function m4v3r4_enqueue_scripts() {
     wp_enqueue_style('m4v3r4-style', get_stylesheet_uri());
 
-    // Customizer renkleri ve font
     $primary_color = get_theme_mod('primary_color', '#FF6266');
     $background_color = get_theme_mod('background_color', '#221f29');
     $theme_font = get_theme_mod('theme_font', "'Fira Code', monospace");
@@ -56,10 +61,30 @@ function m4v3r4_enqueue_scripts() {
 }
 add_action('wp_enqueue_scripts', 'm4v3r4_enqueue_scripts');
 
-// Tema Customizer ayarları
+// ===========================
+// Tema Customizer Ayarları
+// ===========================
 function mytheme_customize_register($wp_customize) {
 
-    // Renk ayarları
+    // --- Header Ayarları Bölümü ---
+    $wp_customize->add_section('header_settings', [
+        'title'    => __('Header Ayarları', 'mytheme'),
+        'priority' => 30,
+    ]);
+
+    // Sticky Header toggle
+    $wp_customize->add_setting('sticky_header', [
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ]);
+    $wp_customize->add_control('sticky_header_control', [
+        'type'    => 'checkbox',
+        'label'   => __('Sticky Header Kullan', 'mytheme'),
+        'section' => 'header_settings',
+        'settings'=> 'sticky_header',
+    ]);
+
+    // --- Renk ayarları ---
     $wp_customize->add_setting('primary_color', [
         'default' => '#FF6266',
         'sanitize_callback' => 'sanitize_hex_color',
@@ -80,53 +105,100 @@ function mytheme_customize_register($wp_customize) {
         'settings' => 'background_color',
     ]));
 
-    // Font ayarı
+    // --- Font ayarı ---
     $wp_customize->add_setting('theme_font', [
         'default' => "'Fira Code', monospace",
-        'sanitize_callback' => 'wp_kses_post',
+        'sanitize_callback' => 'sanitize_text_field',
     ]);
     $wp_customize->add_control('theme_font_control', [
-        'label' => __('Theme Font', 'mytheme'),
-        'section' => 'colors', // Dilersen ayrı bir section açabilirsin
+        'label'    => __('Theme Font', 'mytheme'),
+        'section'  => 'colors',
         'settings' => 'theme_font',
-        'type' => 'select',
-        'choices' => [
+        'type'     => 'select',
+        'choices'  => [
             "'Fira Code', monospace" => 'Fira Code',
-            "Arial, sans-serif" => 'Arial',
-            "'Courier New', monospace" => 'Courier New',
-            "'Roboto', sans-serif" => 'Roboto',
+            "Arial, sans-serif"       => 'Arial',
+            "'Courier New', monospace"=> 'Courier New',
+            "'Roboto', sans-serif"    => 'Roboto',
         ],
     ]);
-}
-add_action('customize_register', 'mytheme_customize_register');
 
+    // --- Logo / Site Başlığı Görünümü ---
+    $wp_customize->add_section('logo_title_display_section', [
+        'title'    => __('Logo / Site Başlığı Görünümü', 'mytheme'),
+        'priority' => 45,
+    ]);
+    $wp_customize->add_setting('logo_title_display', [
+        'default'           => 'both',
+        'sanitize_callback' => 'sanitize_text_field',
+    ]);
+    $wp_customize->add_control('logo_title_display_control', [
+        'label'    => __('Görünüm Seç', 'mytheme'),
+        'section'  => 'logo_title_display_section',
+        'settings' => 'logo_title_display',
+        'type'     => 'radio',
+        'choices'  => [
+            'logo'   => __('Sadece Logo', 'mytheme'),
+            'title'  => __('Sadece Site Başlığı', 'mytheme'),
+            'both'   => __('Logo + Site Başlığı', 'mytheme'),
+        ],
+    ]);
 
-// ===========================
-// Scroll to Top Butonu
-// ===========================
-
-// 1. Customizer aç/kapa ayarı
-function m4v3r4_customize_scroll_to_top($wp_customize) {
+    // --- Scroll to Top ---
     $wp_customize->add_section('scroll_to_top_section', [
         'title'       => __('Yukarı Çıkma Butonu', 'mytheme'),
         'priority'    => 35,
         'description' => __('Yukarı çıkma butonunu açıp kapatabilirsiniz.', 'mytheme'),
     ]);
-
     $wp_customize->add_setting('scroll_to_top_enabled', [
         'default'           => true,
         'sanitize_callback' => 'wp_validate_boolean',
     ]);
-
     $wp_customize->add_control('scroll_to_top_enabled', [
         'type'    => 'checkbox',
         'section' => 'scroll_to_top_section',
         'label'   => __('Butonu aktif et', 'mytheme'),
     ]);
-}
-add_action('customize_register', 'm4v3r4_customize_scroll_to_top');
 
-// 2. Butonu HTML olarak ekle
+    // --- Tema Modu ---
+    $wp_customize->add_section('lumin_theme_mode', [
+        'title' => __('Tema Modu', 'mytheme'),
+        'priority' => 40,
+    ]);
+    $wp_customize->add_setting('lumin_color_mode', [
+        'default' => 'dark',
+        'sanitize_callback' => 'sanitize_text_field',
+    ]);
+    $wp_customize->add_control('lumin_color_mode_control', [
+        'label'    => __('Tema Modu', 'mytheme'),
+        'section'  => 'lumin_theme_mode',
+        'settings' => 'lumin_color_mode',
+        'type'     => 'radio',
+        'choices'  => [
+            'dark'  => __('Karanlık', 'mytheme'),
+            'light' => __('Açık', 'mytheme'),
+        ],
+    ]);
+}
+add_action('customize_register', 'mytheme_customize_register');
+
+// ===========================
+// Body Class: Tema Modu ve Sticky
+// ===========================
+function m4v3r4_add_body_classes($classes) {
+    $mode = get_theme_mod('lumin_color_mode', 'dark'); 
+    $classes[] = $mode . '-mode';
+
+    if (get_theme_mod('sticky_header', true)) {
+        $classes[] = 'header-sticky';
+    }
+    return $classes;
+}
+add_filter('body_class', 'm4v3r4_add_body_classes');
+
+// ===========================
+// Scroll to Top Butonu
+// ===========================
 function m4v3r4_scroll_to_top_button() {
     if (get_theme_mod('scroll_to_top_enabled', true)) : ?>
         <a href="#" id="scrollToTop">↑</a>
@@ -151,21 +223,20 @@ function m4v3r4_scroll_to_top_button() {
             }
         </style>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const scrollBtn = document.getElementById("scrollToTop");
-                window.addEventListener("scroll", function() {
-                    if (window.scrollY > 200) {
-                        scrollBtn.style.display = "block";
-                    } else {
-                        scrollBtn.style.display = "none";
-                    }
-                });
-                scrollBtn.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollBtn = document.getElementById("scrollToTop");
+            window.addEventListener("scroll", function() {
+                if (window.scrollY > 200) scrollBtn.style.display = "block";
+                else scrollBtn.style.display = "none";
             });
+            scrollBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
         </script>
     <?php endif;
 }
 add_action('wp_footer', 'm4v3r4_scroll_to_top_button');
+
+?>

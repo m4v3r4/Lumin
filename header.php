@@ -10,16 +10,33 @@
 <!-- =========================
      Header
 ============================= -->
-<header class="header">
+
+
+<header class="header <?php echo get_theme_mod('sticky_header', true) ? 'header--sticky' : ''; ?>">
+
   <div class="header__inner">
 
-    <!-- Logo -->
-    <div class="header__logo">
-      <a href="<?php echo home_url(); ?>" class="logo">Berkay Uluçay M4V3R4</a>
-    </div>
+
+    <!-- Logo / Site Başlığı -->
+<div class="header__logo">
+  <a href="<?php echo esc_url(home_url()); ?>" class="logo">
+    <?php 
+    $display = get_theme_mod('logo_title_display', 'both');
+
+    if (($display == 'logo' || $display == 'both') && has_custom_logo()) {
+        the_custom_logo();
+    }
+
+    if ($display == 'title' || $display == 'both') {
+        bloginfo('name');
+    }
+    ?>
+  </a>
+</div>
+
 
     <!-- Menü -->
-    <div class="header__menu-wrapper">
+    <div class="header__menu-wrapper">  
       <nav class="menu">
         <?php
         wp_nav_menu(array(
@@ -30,10 +47,18 @@
         ));
         ?>
       </nav>
-
+ <div class="theme-toggle">
+   </div>
       <!-- Hamburger menü butonu -->
       <div class="menu-trigger" aria-label="Menüyü aç/kapat" role="button">☰</div>
+     
+
     </div>
+    <div>
+      <button id="theme-toggle-btn" aria-label="Tema Değiştir">🌙</button>
+    </div>
+   
+    
 
   </div>
 </header>
@@ -42,6 +67,7 @@
      Menü JS / Mobil alt menü
 ============================= -->
 <script>
+  
 document.addEventListener("DOMContentLoaded", function () {
 
   // Alt menüleri aç/kapat (mobil)

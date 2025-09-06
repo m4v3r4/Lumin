@@ -1,60 +1,68 @@
 <?php get_header(); ?>
 
-<div class="container index-page-wrapper" style="display: flex; gap: 40px; flex-wrap: nowrap; align-items: flex-start;">
+<div id="primary" class="content-area" style="display:flex; gap:30px; margin:0 auto; max-width:1200px; padding:20px;">
 
-    <!-- Ana İçerik -->
-    <main class="index-main" style="flex: 3; min-width: 0;">
+    <!-- Sidebar -->
+    <?php if ( get_theme_mod('sidebar_enabled', true) ) : ?>
+<aside id="secondary" class="sidebar" style="flex:0 0 <?php echo get_theme_mod('sidebar_width', 250); ?>px; min-width:150px;">
+    <?php get_sidebar(); ?>
+</aside>
+<?php endif; ?>
+
+    <!-- Main Content -->
+    <main id="main" class="site-main" style="flex:1; display:grid; grid-template-columns: repeat(2, 1fr); gap:30px;">
+
         <?php if ( have_posts() ) : ?>
-            <div class="cards-row">
-                <?php while ( have_posts() ) : the_post(); ?>
-                    <article <?php post_class('post-card'); ?>>
-                        <?php if ( has_post_thumbnail() ) : ?>
-                            <div class="post-card-image">
-                                <a href="<?php the_permalink(); ?>">
-                                    <?php the_post_thumbnail('medium'); ?>
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                        <div class="post-card-content">
-                            <h2 class="post-card-title">
-                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                            </h2>
-                            <div class="post-card-meta">
-                                <?php echo get_the_date(); ?> | <?php the_category(', '); ?>
-                            </div>
-                            <div class="post-card-excerpt">
-                                <?php the_excerpt(); ?>
-                            </div>
+            <?php while ( have_posts() ) : the_post(); ?>
+
+                <article id="post-<?php the_ID(); ?>" <?php post_class('blog-post fade-in'); ?> style="border:1px solid #ccc; padding:15px; border-radius:8px; display:flex; flex-direction:column;">
+
+                    <?php if ( has_post_thumbnail() ) : ?>
+                        <div class="post-thumbnail" style="text-align:center; margin-bottom:15px;">
+                            <a href="<?php the_permalink(); ?>">
+                                <?php the_post_thumbnail('medium', ['class' => 'responsive-img']); ?>
+                            </a>
                         </div>
-                    </article>
-                <?php endwhile; ?>
-            </div>
+                    <?php endif; ?>
+
+                    <header class="post-header" style="margin-bottom:10px;">
+                        <h2 class="post-title" style="font-size:1.5rem;">
+                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h2>
+                        <div class="post-meta" style="font-size:0.85rem; color:#666;">
+                            Yazar: <?php the_author(); ?> | Tarih: <?php the_date(); ?>
+                        </div>
+                    </header>
+
+                    <div class="post-excerpt" style="line-height:1.6; font-size:1rem;">
+                        <?php the_excerpt(); ?>
+                        <a href="<?php the_permalink(); ?>" style="display:inline-block; margin-top:10px;">Devamını oku →</a>
+                    </div>
+
+                    <footer class="post-footer" style="margin-top:10px; font-size:0.85rem; color:#666;">
+                        Kategoriler: <?php the_category(', '); ?> | Etiketler: <?php the_tags('', ', '); ?>
+                    </footer>
+
+                </article>
+
+            <?php endwhile; ?>
 
             <!-- Pagination -->
-            <div class="pagination">
-                <?php 
-                echo paginate_links([
-                    'prev_text' => __('« Önceki', 'm4v3r4-dev'),
-                    'next_text' => __('Sonraki »', 'm4v3r4-dev'),
-                    'type'      => 'list',
-                ]); 
+            <div class="pagination" style="grid-column:1 / -1; text-align:center; margin-top:20px;">
+                <?php
+                    echo paginate_links(array(
+                        'prev_text' => '« Önceki',
+                        'next_text' => 'Sonraki »',
+                    ));
                 ?>
             </div>
 
         <?php else : ?>
             <p>Henüz yazı yok.</p>
         <?php endif; ?>
-    </main>
 
-    <!-- Sidebar -->
-    <aside class="index-sidebar" style="flex: 1; min-width: 250px;">
-        <?php 
-        if ( is_active_sidebar( 'primary-widget-area' ) ) :
-            dynamic_sidebar( 'primary-widget-area' ); 
-        endif; 
-        ?>
-    </aside>
+    </main><!-- #main -->
 
-</div>
+</div><!-- #primary -->
 
 <?php get_footer(); ?>

@@ -1,22 +1,16 @@
 <?php get_header(); ?>
 
-<?php
-// =========================
-// Sayfa İçeriği
-// =========================
-if (have_posts()) :
-    while (have_posts()) : the_post(); ?>
-        <article class="post">
-            <!-- Sayfa Başlığı -->
-            <h1 class="post-title"><?php the_title(); ?></h1>
+<div id="primary" class="content-area page-wrapper">
 
-            <!-- Sayfa İçeriği -->
-            <div class="post-content">
-                <?php the_content(); ?>
-            </div>
-        </article>
-    <?php endwhile;
-endif;
-?>
+    <!-- Main Content -->
+    <main id="main" class="site-main page-main">
+
+       <div class="single-page-content post-content">
+                            <?php the_content(); ?>
+                        </div>
+
+    </main><!-- #main -->
+
+</div><!-- #primary -->
 
 <?php get_footer(); ?>

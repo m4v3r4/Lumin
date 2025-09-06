@@ -11,29 +11,24 @@
      Header
 ============================= -->
 
-
 <header class="header <?php echo get_theme_mod('sticky_header', true) ? 'header--sticky' : ''; ?>">
-
   <div class="header__inner">
-
 
     <!-- Logo / Site Başlığı -->
 <div class="header__logo">
-  <a href="<?php echo esc_url(home_url()); ?>" class="logo">
     <?php 
-    $display = get_theme_mod('logo_title_display', 'both');
+    $display = get_theme_mod('header_display_option', 'logo_title');
 
-    if (($display == 'logo' || $display == 'both') && has_custom_logo()) {
+    if (($display === 'logo' || $display === 'logo_title') && has_custom_logo()) {
+        // Logo kendi linkiyle gelir
         the_custom_logo();
     }
 
-    if ($display == 'title' || $display == 'both') {
-        bloginfo('name');
+    if ($display === 'title' || $display === 'logo_title') {
+        echo '<a href="' . esc_url(home_url()) . '" class="site-title">' . get_bloginfo('name') . '</a>';
     }
     ?>
-  </a>
 </div>
-
 
     <!-- Menü -->
     <div class="header__menu-wrapper">  
@@ -47,42 +42,33 @@
         ));
         ?>
       </nav>
- <div class="theme-toggle">
-   </div>
+      
       <!-- Hamburger menü butonu -->
-      <div class="menu-trigger" aria-label="Menüyü aç/kapat" role="button">☰</div>
-     
-
+        <div class="menu-trigger" aria-label="Menüyü aç/kapat" role="button">☰</div>
     </div>
-    <div>
-      <button id="theme-toggle-btn" aria-label="Tema Değiştir">🌙</button>
-    </div>
-   
+    
     
 
-  </div>
+
+
 </header>
 
-<!-- =========================
-     Menü JS / Mobil alt menü
-============================= -->
 <script>
-  
 document.addEventListener("DOMContentLoaded", function () {
 
-  // Alt menüleri aç/kapat (mobil)
+  // 🔹 Menü işlemleri (mobil)
   const submenuParents = document.querySelectorAll(".menu__inner li.has-submenu > a");
   submenuParents.forEach(link => {
     link.addEventListener("click", function (e) {
       const li = this.parentElement;
       if (window.innerWidth <= 684) {
-        e.preventDefault(); // Linke gitmeyi engelle
-        li.classList.toggle("open"); // Alt menüyü aç/kapat
+        e.preventDefault();
+        li.classList.toggle("open");
       }
     });
   });
 
-  // Hamburger tıklama
+  // 🔹 Hamburger menü
   const menuTrigger = document.querySelector(".menu-trigger");
   const menuInner = document.querySelector(".menu__inner");
   if (menuTrigger) {
@@ -90,6 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
       menuInner.classList.toggle("show");
     });
   }
+
+  
 
 });
 </script>
